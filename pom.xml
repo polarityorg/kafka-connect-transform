@@ -4,7 +4,7 @@
 
     <groupId>io.equaleyes</groupId>
     <artifactId>kafka-connect-transform</artifactId>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.3</version>
     <name>kafka-connect-transform</name>
     <url>https://github.com/polarityorg/kafka-connect-transform</url>
     <description>Transformations for Kafka Connect.</description>
@@ -227,7 +227,7 @@
         <connection>scm:git:https://github.com/polarityorg/kafka-connect-transform.git</connection>
         <developerConnection>scm:git:https://github.com/polarityorg/kafka-connect-transform.git</developerConnection>
         <url>https://github.com/polarityorg/kafka-connect-transform</url>
-        <tag>HEAD</tag>
+        <tag>v0.3</tag>
     </scm>
     <issueManagement>
         <system>github</system>
