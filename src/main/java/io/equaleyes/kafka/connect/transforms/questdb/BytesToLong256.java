@@ -270,7 +270,7 @@ public abstract class BytesToLong256<R extends ConnectRecord<R>> implements Tran
         }
 
         // For any other type, convert to string and add format
-        return "0x" + value.toString() + "i";
+        return "0x" + value + "i";
     }
 
     /**

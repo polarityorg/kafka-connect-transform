@@ -64,7 +64,7 @@ public class BytesToLong256Test {
     public static Stream<Arguments> byteArrayToLong256Data() {
         return Stream.of(
                 Arguments.of(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x0D, 0x40}, "0x30d40i"), // 200000
-                Arguments.of(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, (byte)0xE8}, "0x3e8i"),   // 1000
+                Arguments.of(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, (byte) 0xE8}, "0x3e8i"),   // 1000
                 Arguments.of(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2A}, "0x2ai")           // 42
         );
     }
@@ -233,7 +233,7 @@ public class BytesToLong256Test {
         xformValue.configure(configs);
 
         // 0x00000000000003E8 = 1000 in decimal
-        byte[] testBytes = new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, (byte)0xE8};
+        byte[] testBytes = new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, (byte) 0xE8};
         ByteBuffer byteBuffer = ByteBuffer.wrap(testBytes);
 
         // Create schema for binary data
@@ -447,7 +447,7 @@ public class BytesToLong256Test {
         xformValue.configure(configs);
 
         // 0x00000000000000C8 = 200 in decimal
-        byte[] defaultBytes = new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0xC8};
+        byte[] defaultBytes = new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xC8};
 
         // Create schema with default value
         Schema schema = SchemaBuilder.struct()
@@ -456,7 +456,7 @@ public class BytesToLong256Test {
 
         // Create record
         Struct value = new Struct(schema);
-        value.put("token_amount", new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x22, (byte)0xB8}); // 8888
+        value.put("token_amount", new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x22, (byte) 0xB8}); // 8888
 
         SourceRecord original = new SourceRecord(null, null, "topic", 0,
                 Schema.STRING_SCHEMA, "key", schema, value);
