@@ -17,10 +17,7 @@ import org.apache.kafka.connect.transforms.util.SchemaUtil;
 import org.apache.kafka.connect.transforms.util.SimpleConfig;
 
 import java.nio.ByteBuffer;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.apache.kafka.connect.transforms.util.Requirements.requireMap;
 import static org.apache.kafka.connect.transforms.util.Requirements.requireStruct;
@@ -34,6 +31,7 @@ public abstract class BytesToHexString<R extends ConnectRecord<R>> implements Tr
 
     public static final String FIELDS_CONFIG = "fields";
     public static final String REPLACE_NULL_WITH_DEFAULT_CONFIG = "replace.null.with.default";
+    public static final String CONVERSION_CACHE_SIZE_CONFIG = "conversion.cache.size";
 
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
             .define(FIELDS_CONFIG, ConfigDef.Type.LIST, ConfigDef.NO_DEFAULT_VALUE,
@@ -58,7 +56,13 @@ public abstract class BytesToHexString<R extends ConnectRecord<R>> implements Tr
                     ConfigDef.Type.BOOLEAN,
                     true,
                     ConfigDef.Importance.MEDIUM,
-                    "Whether to replace fields that have a default value and that are null to the default value. When set to true, the default value is used, otherwise null is used.");
+                    "Whether to replace fields that have a default value and that are null to the default value. When set to true, the default value is used, otherwise null is used.")
+            .define(CONVERSION_CACHE_SIZE_CONFIG,
+                    ConfigDef.Type.INT,
+                    1024,
+                    ConfigDef.Range.atLeast(0),
+                    ConfigDef.Importance.LOW,
+                    "Maximum number of byte array to hex string conversions to cache. Set to 0 to disable caching.");
 
     private static final String PURPOSE = "converting bytes to hex strings";
 
@@ -67,7 +71,9 @@ public abstract class BytesToHexString<R extends ConnectRecord<R>> implements Tr
 
     private List<String> fields;
     private Cache<Schema, Schema> schemaUpdateCache;
+    private Cache<ByteArrayWrapper, String> conversionCache;
     private boolean replaceNullWithDefault;
+    private int conversionCacheSize;
 
     @Override
     public String version() {
@@ -79,7 +85,14 @@ public abstract class BytesToHexString<R extends ConnectRecord<R>> implements Tr
         final SimpleConfig config = new SimpleConfig(CONFIG_DEF, configs);
         fields = config.getList(FIELDS_CONFIG);
         replaceNullWithDefault = config.getBoolean(REPLACE_NULL_WITH_DEFAULT_CONFIG);
+        conversionCacheSize = config.getInt(CONVERSION_CACHE_SIZE_CONFIG);
+
         schemaUpdateCache = new SynchronizedCache<>(new LRUCache<>(16));
+
+        // Initialize conversion cache if enabled
+        if (conversionCacheSize > 0) {
+            conversionCache = new SynchronizedCache<>(new LRUCache<>(conversionCacheSize));
+        }
     }
 
     @Override
@@ -208,20 +221,21 @@ public abstract class BytesToHexString<R extends ConnectRecord<R>> implements Tr
 
         // Handle byte arrays
         if (value instanceof byte[]) {
-            return toHexString((byte[]) value);
+            byte[] bytes = (byte[]) value;
+            return getCachedHexString(bytes);
         }
 
         if (value instanceof ByteBuffer) {
             ByteBuffer buffer = (ByteBuffer) value;
             byte[] bytes = Utils.readBytes(buffer);
-            return toHexString(bytes);
+            return getCachedHexString(bytes);
         }
 
         // Handle Base64 encoded strings (common in Debezium)
         if (value instanceof String) {
             try {
                 byte[] decoded = Base64.getDecoder().decode((String) value);
-                return toHexString(decoded);
+                return getCachedHexString(decoded);
             } catch (IllegalArgumentException e) {
                 // Not Base64, return as is
                 return (String) value;
@@ -230,6 +244,33 @@ public abstract class BytesToHexString<R extends ConnectRecord<R>> implements Tr
 
         // For any other type, return string representation
         return value.toString();
+    }
+
+    /**
+     * Gets a cached hex string or creates and caches a new one
+     */
+    private String getCachedHexString(byte[] bytes) {
+        if (bytes == null || bytes.length == 0) {
+            return "";
+        }
+
+        // If caching is disabled, convert directly
+        if (conversionCacheSize <= 0 || conversionCache == null) {
+            return toHexString(bytes);
+        }
+
+        // Wrap the byte array for use as a cache key
+        ByteArrayWrapper key = new ByteArrayWrapper(bytes);
+
+        // Try to get from cache
+        String hexString = conversionCache.get(key);
+        if (hexString == null) {
+            // Not in cache, convert and cache the result
+            hexString = toHexString(bytes);
+            conversionCache.put(key, hexString);
+        }
+
+        return hexString;
     }
 
     /**
@@ -321,6 +362,31 @@ public abstract class BytesToHexString<R extends ConnectRecord<R>> implements Tr
         protected R newRecord(R record, Schema updatedSchema, Object updatedValue) {
             return record.newRecord(record.topic(), record.kafkaPartition(), record.keySchema(), record.key(),
                     updatedSchema, updatedValue, record.timestamp());
+        }
+    }
+
+    /**
+     * Wrapper for byte arrays to use as keys in the cache.
+     * This handles the equals() and hashCode() properly for byte arrays.
+     */
+    private static class ByteArrayWrapper {
+        private final byte[] data;
+
+        public ByteArrayWrapper(byte[] data) {
+            this.data = data;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (!(other instanceof ByteArrayWrapper)) {
+                return false;
+            }
+            return Arrays.equals(data, ((ByteArrayWrapper) other).data);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(data);
         }
     }
 }
