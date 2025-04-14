@@ -1,4 +1,4 @@
-package io.equaleyes;
+package io.equaleyes.kafka.connect.transforms;
 
 import org.apache.kafka.common.cache.Cache;
 import org.apache.kafka.common.cache.LRUCache;

@@ -1,4 +1,4 @@
-package io.equaleyes;
+package io.equaleyes.kafka.connect.transforms;
 
 import org.apache.kafka.common.config.ConfigException;
 import org.apache.kafka.connect.data.Schema;
