@@ -30,49 +30,49 @@ public class BytesToLong256Test {
 
     public static Stream<Arguments> hexToLong256Data() {
         return Stream.of(
-                Arguments.of("0x00000000000000000000000000000311", "0x311i"),
-                Arguments.of("0x000000000000000000000000000003D4", "0x3d4i"),
-                Arguments.of("0x000000000000000000000000000003E3", "0x3e3i"),
-                Arguments.of("0x00000000000000000000000000030188", "0x30188i"),
+                Arguments.of("0x00000000000000000000000000000311", "0x0311i"),
+                Arguments.of("0x000000000000000000000000000003D4", "0x03D4i"),
+                Arguments.of("0x000000000000000000000000000003E3", "0x03E3i"),
+                Arguments.of("0x00000000000000000000000000030188", "0x030188i"),
                 Arguments.of("0x00000000000000000000000000000014", "0x14i"),
-                Arguments.of("0x00000000000000000000000000000005", "0x5i"),
-                Arguments.of("0x259DA6542D4362000000000000000000", "0x259da6542d4362000000000000000000i"),
-                Arguments.of("0x000000000000000000000000000003E8", "0x3e8i"),
-                Arguments.of("0x000000000000000000000000000000C8", "0xc8i"),
-                Arguments.of("0x0000000000000000000000000000030C", "0x30ci"),
-                Arguments.of("0x000000000000000000000000000022B8", "0x22b8i"),
+                Arguments.of("0x00000000000000000000000000000005", "0x05i"),
+                Arguments.of("0x259DA6542D4362000000000000000000", "0x259DA6542D4362000000000000000000i"),
+                Arguments.of("0x000000000000000000000000000003E8", "0x03E8i"),
+                Arguments.of("0x000000000000000000000000000000C8", "0xC8i"),
+                Arguments.of("0x0000000000000000000000000000030C", "0x030Ci"),
+                Arguments.of("0x000000000000000000000000000022B8", "0x22B8i"),
                 Arguments.of("0x00000000000000000000000000000064", "0x64i"),
-                Arguments.of("0x00000000000000000000000000030958", "0x30958i"),
-                Arguments.of("0x000000000000000000000000000F4240", "0xf4240i"),
-                Arguments.of("0x00000000000000000000000000030570", "0x30570i"),
-                Arguments.of("0x0000000000000000000000000002FDA0", "0x2fda0i"),
-                Arguments.of("0x000000000000000000000000000026AC", "0x26aci"),
-                Arguments.of("0x00000000000000000000000005F5E100", "0x5f5e100i"),
-                Arguments.of("0x0000000000000000000000000000263E", "0x263ei"),
-                Arguments.of("0x00000000000000000000000000000FA0", "0xfa0i"),
-                Arguments.of("0x0000000000000000000000000000000A", "0xai"),
-                Arguments.of("0x000000000000000000000000000186A0", "0x186a0i"),
-                Arguments.of("0x000000000000000000000000000003DE", "0x3dei"),
+                Arguments.of("0x00000000000000000000000000030958", "0x030958i"),
+                Arguments.of("0x000000000000000000000000000F4240", "0x0F4240i"),
+                Arguments.of("0x00000000000000000000000000030570", "0x030570i"),
+                Arguments.of("0x0000000000000000000000000002FDA0", "0x02FDA0i"),
+                Arguments.of("0x000000000000000000000000000026AC", "0x26ACi"),
+                Arguments.of("0x00000000000000000000000005F5E100", "0x05F5E100i"),
+                Arguments.of("0x0000000000000000000000000000263E", "0x263Ei"),
+                Arguments.of("0x00000000000000000000000000000FA0", "0x0FA0i"),
+                Arguments.of("0x0000000000000000000000000000000A", "0x0Ai"),
+                Arguments.of("0x000000000000000000000000000186A0", "0x0186A0i"),
+                Arguments.of("0x000000000000000000000000000003DE", "0x03DEi"),
                 Arguments.of("0x00000000000000000000000000002710", "0x2710i"),
-                Arguments.of("0x00000000000000000000000000000316", "0x316i"),
-                Arguments.of("0x000000000000000000000000000026A2", "0x26a2i"),
-                Arguments.of("0x0000000000000000000000000002F9B8", "0x2f9b8i"),
-                Arguments.of("0x00000000000000000000000000030D40", "0x30d40i")
+                Arguments.of("0x00000000000000000000000000000316", "0x0316i"),
+                Arguments.of("0x000000000000000000000000000026A2", "0x26A2i"),
+                Arguments.of("0x0000000000000000000000000002F9B8", "0x02F9B8i"),
+                Arguments.of("0x00000000000000000000000000030D40", "0x030D40i")
         );
     }
 
     public static Stream<Arguments> byteArrayToLong256Data() {
         return Stream.of(
-                Arguments.of(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x0D, 0x40}, "0x30d40i"), // 200000
-                Arguments.of(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, (byte) 0xE8}, "0x3e8i"),   // 1000
-                Arguments.of(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2A}, "0x2ai")           // 42
+                Arguments.of(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x0D, 0x40}, "0x030D40i"), // 200000
+                Arguments.of(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, (byte) 0xE8}, "0x03E8i"),   // 1000
+                Arguments.of(new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x2A}, "0x2Ai")           // 42
         );
     }
 
     public static Stream<Arguments> nullWithDefaultData() {
         return Stream.of(
                 Arguments.of(false, null),
-                Arguments.of(true, "0x2ai") // 42 in hex with suffix
+                Arguments.of(true, "0x2Ai") // 42 in hex with suffix
         );
     }
 
@@ -255,7 +255,7 @@ public class BytesToLong256Test {
 
         // Verify value transformation
         Struct transformedValue = (Struct) transformed.value();
-        assertEquals("0x3e8i", transformedValue.get("token_amount"));
+        assertEquals("0x03E8i", transformedValue.get("token_amount"));
     }
 
     @Test
@@ -287,7 +287,7 @@ public class BytesToLong256Test {
 
         // Verify transformation
         Struct transformedValue = (Struct) transformed.value();
-        assertEquals("0x30ci", transformedValue.get("token_amount"));
+        assertEquals("0x030Ci", transformedValue.get("token_amount"));
     }
 
     @Test
@@ -318,7 +318,7 @@ public class BytesToLong256Test {
         // Verify transformation
         Struct transformedValue = (Struct) transformed.value();
         assertEquals("0x64i", transformedValue.get("token_amount1"));
-        assertEquals("0xfa0i", transformedValue.get("token_amount2"));
+        assertEquals("0x0FA0i", transformedValue.get("token_amount2"));
         assertEquals("test", transformedValue.get("other_field"));
     }
 
@@ -410,8 +410,8 @@ public class BytesToLong256Test {
         assertSame(transformed1.valueSchema(), transformed2.valueSchema());
 
         // Verify values were correctly transformed
-        assertEquals("0x3dei", ((Struct) transformed1.value()).get("token_amount"));
-        assertEquals("0x26a2i", ((Struct) transformed2.value()).get("token_amount"));
+        assertEquals("0x03DEi", ((Struct) transformed1.value()).get("token_amount"));
+        assertEquals("0x26A2i", ((Struct) transformed2.value()).get("token_amount"));
     }
 
     // Just the modified test method for empty byte array
@@ -437,7 +437,7 @@ public class BytesToLong256Test {
         SourceRecord transformed = xformValue.apply(original);
 
         // Verify empty array produces null
-        assertEquals("0x8000000000000000800000000000000080000000000000008000000000000000i", ((Struct) transformed.value()).get("token_amount"));
+        assertEquals("0x08000000000000000800000000000000080000000000000008000000000000000i", ((Struct) transformed.value()).get("token_amount"));
     }
 
     @Test
@@ -465,10 +465,10 @@ public class BytesToLong256Test {
         SourceRecord transformed = xformValue.apply(original);
 
         // Verify default value was transformed
-        assertEquals("0xc8i", transformed.valueSchema().field("token_amount").schema().defaultValue());
+        assertEquals("0xC8i", transformed.valueSchema().field("token_amount").schema().defaultValue());
 
         // Verify actual value was transformed
-        assertEquals("0x22b8i", ((Struct) transformed.value()).get("token_amount"));
+        assertEquals("0x22B8i", ((Struct) transformed.value()).get("token_amount"));
     }
 
     @Test

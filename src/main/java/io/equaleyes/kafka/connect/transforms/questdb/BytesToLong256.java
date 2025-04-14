@@ -207,7 +207,7 @@ public abstract class BytesToLong256<R extends ConnectRecord<R>> implements Tran
 
     /**
      * Converts various types of binary data to a QuestDB long256 representation
-     * (hex string with 'i' suffix)
+     * (uppercase hex string with 'i' suffix, formatted as 0x0ABCi)
      */
     private String convertToLong256(Object value) {
         if (value == null) {
@@ -234,13 +234,14 @@ public abstract class BytesToLong256<R extends ConnectRecord<R>> implements Tran
                 try {
                     // Extract hex part without prefix and suffix
                     String hexPart = strValue.substring(2, strValue.length() - 1);
-                    // Convert to BigInteger to normalize (remove leading zeros)
+                    // Convert to BigInteger to normalize
                     BigInteger bigInt = new BigInteger(hexPart, 16);
-                    // Return normalized format
-                    return "0x" + bigInt.toString(16).toLowerCase() + "i";
+                    // Return normalized format with uppercase hex and ensure it starts with 0
+                    String hexString = bigInt.toString(16).toUpperCase();
+                    return "0x" + (hexString.length() % 2 == 1 ? "0" : "") + hexString + "i";
                 } catch (NumberFormatException e) {
-                    // If there's an issue parsing, just return as is
-                    return strValue;
+                    // If there's an issue parsing, just ensure uppercase
+                    return strValue.toUpperCase();
                 }
             }
 
@@ -249,13 +250,14 @@ public abstract class BytesToLong256<R extends ConnectRecord<R>> implements Tran
                 try {
                     // Extract hex part without prefix
                     String hexPart = strValue.substring(2);
-                    // Convert to BigInteger to normalize (remove leading zeros)
+                    // Convert to BigInteger to normalize
                     BigInteger bigInt = new BigInteger(hexPart, 16);
-                    // Return normalized format
-                    return "0x" + bigInt.toString(16).toLowerCase() + "i";
+                    // Return normalized format with uppercase hex and ensure it starts with 0
+                    String hexString = bigInt.toString(16).toUpperCase();
+                    return "0x" + (hexString.length() % 2 == 1 ? "0" : "") + hexString + "i";
                 } catch (NumberFormatException e) {
-                    // If there's an issue parsing, just add suffix
-                    return strValue + "i";
+                    // If there's an issue parsing, just uppercase and add suffix
+                    return strValue.toUpperCase() + "i";
                 }
             }
 
@@ -265,28 +267,35 @@ public abstract class BytesToLong256<R extends ConnectRecord<R>> implements Tran
                 return bytesToLong256(decoded);
             } catch (IllegalArgumentException e) {
                 // Not Base64, just convert to long256 format
-                return "0x" + strValue + "i";
+                return "0x" + strValue.toUpperCase() + "i";
             }
         }
 
         // For any other type, convert to string and add format
-        return "0x" + value + "i";
+        return "0x" + value.toString().toUpperCase() + "i";
     }
 
     /**
      * Converts a byte array to QuestDB long256 hex string with 'i' suffix
+     * Ensures hex is uppercase and adds leading zero for odd-length hex strings
      */
     private String bytesToLong256(byte[] bytes) {
         if (bytes == null || bytes.length == 0) {
-            return "0x8000000000000000800000000000000080000000000000008000000000000000i";
+            return "0x08000000000000000800000000000000080000000000000008000000000000000i";
         }
 
         // Convert byte array to BigInteger for proper hex representation
         BigInteger bigInt = new BigInteger(1, bytes);
 
-        // Convert to hex string and add QuestDB long256 format
-        // This will automatically remove leading zeros
-        return "0x" + bigInt.toString(16).toLowerCase() + "i";
+        // Convert to hex string and format as required
+        String hexString = bigInt.toString(16).toUpperCase();
+
+        // Ensure even number of characters by adding a leading zero if needed
+        if (hexString.length() % 2 == 1) {
+            hexString = "0" + hexString;
+        }
+
+        return "0x" + hexString + "i";
     }
 
     @Override
